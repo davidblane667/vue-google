@@ -3,6 +3,7 @@
     <div class="uk-container uk-container-large">
 
       <form
+        @submit.prevent="submitHandler"
         class="uk-position-center"
       >
         <fieldset class="uk-fieldset">
@@ -30,10 +31,10 @@
               ></a>
             </div>
             <div
-              v-if="inputValue && message"
               class="uk-alert"
+              :class="{'visible': hasMessage}"
             >
-              {{message}}
+              {{message || ''}}
             </div>
 
           </div>
@@ -62,6 +63,7 @@
         this.message = ''
       },
       submitHandler() {
+        this.isCurrentValue = false
         const value = this.inputValue
         switch (this.isCurrentValue) {
           case !this.validateEmail(value):
@@ -101,6 +103,9 @@
     computed: {
       debounceInput: function () {
         return debounce(this.submitHandler, 1000)
+      },
+      hasMessage() {
+        return (this.inputValue && this.message)
       }
     }
   }
@@ -114,6 +119,15 @@
     .uk-alert {
       box-sizing: border-box;
       width: 400px;
+    }
+
+    & .uk-alert {
+      min-height: 54px;
+      opacity: 0;
+
+      &.visible {
+        opacity: 1;
+      }
     }
   }
 </style>
